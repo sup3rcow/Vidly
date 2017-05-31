@@ -54,8 +54,10 @@ namespace Vidly.Controllers
         [HttpPost]
         public ActionResult Save(Customer customer)//mvc automatski pomapira NewCustomerModel na Customer model
         {
-            if (0 == 1/*!ModelState.IsValid*/)//provjeris da li je dobro pomapirano.. ako nije vratis na doradu, ovo doradi..
+            if (!ModelState.IsValid)//provjeris da li je dobro pomapirano.. ako nije vratis na doradu, ovo doradi..
+                                    //mada mozda bolje ne ovo raditi, nego ubaciti validacije na polja
             {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
                 var viewModel = new CustomerFormViewModel
                 {
                     MembershipTypes = _context.MembershipTypes.ToList(),//moras poslati opet podatke za dropdown

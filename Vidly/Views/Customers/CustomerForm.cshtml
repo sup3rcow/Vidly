@@ -5,6 +5,9 @@
 
 @if (Model.Customer == null)
 {
+    Model.Customer = new Vidly.Models.Customer { Id=0};//ovo napravis kako bi mogao u kontroleru provjeriti ModelState.IsValid
+    //mada mozda bolje ne ovo raditi, nego ubaciti validacije na polja
+
     <h2>New Customer</h2>
 }
 else
