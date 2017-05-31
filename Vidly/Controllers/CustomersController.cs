@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Vidly.Models;
@@ -7,27 +7,41 @@ namespace Vidly.Controllers
 {
     public class CustomersController : Controller
     {
-        //dummy data
-        List<Customer> customers = new List<Customer>()
+        private ApplicationDbContext _context;
+        public CustomersController()
         {
-            new Customer{ Name = "John Smith" , Id=1 },
-            new Customer{ Name = "Mary Williams", Id=2 }
-        };
+            _context = new ApplicationDbContext();
+        }
+
+        //_context treba disposati? do sada niko ovo nije radio u primjerima
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();    
+        }
 
         // GET: Customers
         public ActionResult Index()
         {
-            return View(customers);
+            return View(_context.Customers.Include(c => c.MembershipType).ToList());
+            //ili Include("MembershipType"), i onda moras using System.Data.Entity;, ali tada ovisis os magicnom stringu, i akko ga lose
+            //napises, gresku ces videti tek u runtime-u
+            //ako ne pozoves tu to list, query ce se izvrsiti u cshtml-u u foreach-u
         }
 
         public ActionResult Details(int id)
         {
-            var customer = customers.Where(c => c.Id == id).FirstOrDefault();
+            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id);//SigleOrDefault odmah izvrsava query
             /*if (customer == null)//ili object.ReferenceEquals(customer,null), u cshml-u radis provjeru
             {
                 return View;
             }*/
             return View(customer);
+        }
+
+        [HttpGet]
+        public ActionResult New()
+        {
+            return View();
         }
     }
 }

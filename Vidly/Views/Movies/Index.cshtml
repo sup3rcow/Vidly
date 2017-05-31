@@ -9,13 +9,15 @@
     <thead>
         <tr style="width:100%">
             <th>Movie</th>
+            <th>Genre</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var c in Model)
+        @foreach (var m in Model)
             {
             <tr style="width:100%">
-                <th style="font-weight:400">@c.Name</th>
+                <th>@Html.ActionLink(m.Name, "Details", "Movies", new { Id = m.Id}, null)</th>
+                <th style="font-weight:400">@m.Genre.Name</th>
             </tr>
         }
     </tbody>

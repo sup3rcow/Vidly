@@ -15,13 +15,15 @@ else
         <thead>
             <tr style="width:100%">
                 <th>Customer</th>
+                <th>Membership Info</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var c in Model)
             {
                 <tr style="width:100%">
-                    <th class="btn-link"><a href="customers/details/@c.Id">@c.Name</a></th>
+                    <th >@Html.ActionLink(c.Name, "Details", "Customers", new { Id = c.Id}, null)</th>
+                    <th style="font-weight:400">@c.MembershipType.Name</th>
                 </tr>
             }
         </tbody>
