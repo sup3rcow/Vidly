@@ -14,8 +14,11 @@ namespace Vidly.Models
 
         //ovako napravis foreign key u tablici
         public MembershipType MembershipType { get; set; }
+        [Display(Name = "Memebership Type")]
         public byte MembershipTypeId { get; set; }//ef konvencijom, skuzi da je ovo foreign key od MembershipType-a
 
+        [Display(Name = "Date of birth")]//ovo nije ok uvijek, jer kad hoces mijenjati labelu, moras rebuildati projekt..
+        //mozes pisati i raw html, ali onda sam moras napisati for="Birthdate".. ni to nije idealno, pa kkoristi sta ti odgovara vise
         public DateTime? Birthdate { get; set; }
     }
 }
