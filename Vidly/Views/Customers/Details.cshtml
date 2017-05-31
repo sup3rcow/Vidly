@@ -11,12 +11,14 @@
 }
 else
 {
-    <h2>@Model.Name</h2>
+    <span style="font-size:x-large">@Model.Name</span> 
+    <span >(@Html.ActionLink("Edit", "Edit", "Customers", new { Id = Model.Id }, null))</span>
+
     <ul>
         <li>Membership Type: @Model.MembershipType.Name</li>
         @if (Model.Birthdate.HasValue)
         {
-            <li>Birthdate: @Html.Label(string.Format("{0:dd MMM yyyy}", Model.Birthdate))</li>
+            <li>Birthdate: @Html.Label(string.Format("{0:d MMM yyyy}", Model.Birthdate))</li>
             <li>Birthdate: @Model.Birthdate.Value.ToShortDateString()</li>
         }
     </ul>
