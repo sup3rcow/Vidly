@@ -24,7 +24,11 @@ else
 {
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.Name)
-        @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control", autofocus = ""})@*dodas html attribute: bootrap klasu, kako bi input field dobio temu*@
+        @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control", autofocus = "", Value = Model.Customer.Name })@*dodas html attribute: bootrap klasu, kako bi input field dobio temu*@
+        @*sa Value = Model.Customer.Name, forsas na postbacku da se zamijeni vrijednost u formi sa onim sto ti posalje kontroler
+            inace http helper zadrzi staru vrijednost, ovo je samo za test.. ne trebas to pisati nikada, 
+            osim kad ti bas bude trebala takva funksionalnost*@
+        
         @Html.ValidationMessageFor(m => m.Customer.Name, "Please enter customer name")<!--custom message mozes definirati i u Customer.cs modelu-->
     </div>
     <div class="form-group">

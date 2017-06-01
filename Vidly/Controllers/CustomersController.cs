@@ -63,14 +63,19 @@ namespace Vidly.Controllers
                 var viewModel = new CustomerFormViewModel
                 {
                     MembershipTypes = _context.MembershipTypes.ToList(),//moras poslati opet podatke za dropdown
-                    Customer = customer
+                    Customer = customer//ovo je samo zbog toga da se Id postavi na 0..
                 };
+
+                //ModelState.Clear();//ovo brise error-e iz modelstate-a, to ti ne treba sada..
+
+                viewModel.Customer.Name = "Zamjenaaa"; 
+                //ovo si dodao u html helper kako bi pokupio zamjenu vrijednosti:Value = Model.Customer.Name
 
                 return View("CustomerForm", viewModel);
             }
 
 
-            else if (customer.Id != 0)//ako je 0, znaci da trebas insert, inace je update
+            else if (customer.Id > 0)//ako je 0, znaci da trebas insert, inace je update
             {
                 var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);//single, odmah izvrsava query
                                                                                        //ne pozivas singleOrDefault, jer ne zelis to hendlati, neka izbaci exceprion..
