@@ -15,6 +15,12 @@ namespace Vidly.Controllers
         {
             _context = new ApplicationDbContext();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+
         // GET: Movies/Random
         public ActionResult Random()
         {
@@ -80,14 +86,26 @@ namespace Vidly.Controllers
             var genres = _context.Genres.ToList();
             var viewModel = new MovieFormViewModel
             {
-                Genres = genres
+                Genres = genres//u konstruktoru od MovieFormViewModel, si stavio da je Id = 0
             };
             return View("MovieForm", viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Movie movie)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);//samo za uvid..
+
+            if (!ModelState.IsValid)//projerava da li propertiji koji su se vratili formom, 
+                //propertije od klase koji se nisu vratili ne provjerava 
+            {
+                var viewModel = new MovieFormViewModel
+                {
+                    Genres = _context.Genres.ToList(),
+                    Name = "????"
+                };
+                return View("MovieForm", viewModel);
+            }
 
             if (movie.Id > 0)//ako je id veci od 0, znas da je edit a ne new movie
             {
@@ -97,7 +115,7 @@ namespace Vidly.Controllers
                 movieInDb.GenreId = movie.GenreId;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
                 movieInDb.NumberInStock = movie.NumberInStock;
-                movieInDb.DateAdded = movie.DateAdded;//ovo saljes kroz hiddne field cshtml..
+                //movieInDb.DateAdded = movie.DateAdded;//ovo ne jer ne mijenjas ga, a u formi ga mias kao 1.1.0001!!!
 
                 _context.SaveChanges();
 
@@ -114,10 +132,10 @@ namespace Vidly.Controllers
         {
             var movie = _context.Movies.Single(m => m.Id == id);//ili single or default ko u customerController-u, 
                                                                 //sam procijeni koje greske i kako hoces hendlati
-            var viewModel = new MovieFormViewModel
+
+            var viewModel = new MovieFormViewModel(movie)//u konstruktoru si definirao mapiranje. COOL
             {
-                Genres = _context.Genres.ToList(),//moras ovo slati zbog drop down liste
-                Movie = movie
+                Genres = _context.Genres.ToList(),//moras ovo slati zbog drop down liste                
             };
 
             return View("MovieForm", viewModel);

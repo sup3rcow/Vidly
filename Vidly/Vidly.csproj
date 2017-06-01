@@ -252,6 +252,14 @@
     <Compile Include="Migrations\201705311500046_AddMemebrshipTypeDbContext.Designer.cs">
       <DependentUpon>201705311500046_AddMemebrshipTypeDbContext.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706011235094_ChangeMovieRequiredSettings.cs" />
+    <Compile Include="Migrations\201706011235094_ChangeMovieRequiredSettings.Designer.cs">
+      <DependentUpon>201706011235094_ChangeMovieRequiredSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706011353360_ChangeMovieRequiredSettings2.cs" />
+    <Compile Include="Migrations\201706011353360_ChangeMovieRequiredSettings2.Designer.cs">
+      <DependentUpon>201706011353360_ChangeMovieRequiredSettings2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -395,6 +403,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705311500046_AddMemebrshipTypeDbContext.resx">
       <DependentUpon>201705311500046_AddMemebrshipTypeDbContext.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706011235094_ChangeMovieRequiredSettings.resx">
+      <DependentUpon>201706011235094_ChangeMovieRequiredSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706011353360_ChangeMovieRequiredSettings2.resx">
+      <DependentUpon>201706011353360_ChangeMovieRequiredSettings2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

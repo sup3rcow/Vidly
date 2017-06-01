@@ -53,6 +53,7 @@ namespace Vidly.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer customer)//mvc automatski pomapira NewCustomerModel na Customer model
         {
             if (!ModelState.IsValid)//provjeris da li je dobro pomapirano.. ako nije vratis na doradu, ovo doradi..

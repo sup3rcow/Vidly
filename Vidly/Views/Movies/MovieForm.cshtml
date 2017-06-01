@@ -2,39 +2,43 @@
 @{
     ViewBag.Title = "New";
 }
-@if (Model.Movie == null)
-{
-    <h2>Submitt a new movie</h2>
-}
-else
-{
-    <h2>Edit Movie: @Model.Movie.Name</h2>
-}
 
+<h2>@Model.Title</h2>
+
+@Html.ValidationSummary(true, "Please fix the folowing errors:")
 
 @using (Html.BeginForm("Save", "Movies"))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.Movie.Name)
-        @Html.TextBoxFor(m => m.Movie.Name, new { @class = "form-control" })@*dodas html attribute: bootrap klasu, kako bi input field dobio temu*@
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })@*dodas html attribute: bootrap klasu, kako bi input field dobio temu*@
+        @Html.ValidationMessageFor(m => m.Name)
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Movie.ReleaseDate)
-        @Html.TextBoxFor(m => m.Movie.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.LabelFor(m => m.ReleaseDate)
+        @Html.TextBoxFor(m => m.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control", placeholder = "1 JAN 2000" })
+        @Html.ValidationMessageFor(m => m.ReleaseDate)
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Movie.GenreId)
-        @Html.DropDownListFor(m => m.Movie.GenreId, new SelectList(Model.Genres, "Id", "Name"), "Choose..", new { @class = "form-control" })
+        @Html.LabelFor(m => m.GenreId)
+        @Html.DropDownListFor(m => m.GenreId, new SelectList(Model.Genres, "Id", "Name"), "Choose..", new { @class = "form-control" })
         <!--                                                                   gdje se nalaze podaci, Id od tablice, sto zelis prikazatu u dropdown-->
+        @Html.ValidationMessageFor(m => m.GenreId)
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Movie.NumberInStock)
-        @Html.TextBoxFor(m => m.Movie.NumberInStock, new { @class = "form-control" })
+        @Html.LabelFor(m => m.NumberInStock)
+        @Html.TextBoxFor(m => m.NumberInStock, new { @class = "form-control", placeholder = "1-20" })
+        @Html.ValidationMessageFor(m => m.NumberInStock)
     </div>
-    @Html.HiddenFor(m => m.Movie.Id)<!--moras proslijediti i id, nece bit 0 ako je create new movie, pogledaj kako si napravio u CustomerForm na pocetku -->
-    @Html.HiddenFor(m => m.Movie.DateAdded)
-    <!--ako fieldovi nisu deifnirani, npr za novi film, u kontroleru ce biti null-->
+    @Html.HiddenFor(m => m.Id)<!--moras proslijediti i id, bit ce 0 ako je new movie -->
+    <!--ne treba hiddenfor date added, jer ako je novi fil, properti ce se kreirati u kontroleru,
+        ako je edit, properti je vec definiran u bazi pa ga ni netreba mijenjati-->
+    @Html.AntiForgeryToken()
     <div>
         <button class="btn btn-primary" type="submit">Save</button>
     </div>
 }
+
+@*@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@
