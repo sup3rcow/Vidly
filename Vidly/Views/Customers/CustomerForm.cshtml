@@ -5,8 +5,10 @@
 
 @if (Model.Customer == null)
 {
-    Model.Customer = new Vidly.Models.Customer { Id=0};//ovo napravis kako bi mogao u kontroleru provjeriti ModelState.IsValid
+    //Model.Customer = new Vidly.Models.Customer { Id=0};//ovo napravis kako bi mogao u kontroleru provjeriti ModelState.IsValid
     //mada mozda bolje ne ovo raditi, nego ubaciti validacije na polja
+    //zakomentirao si sve jer si ovo rijesio tako sto si u New action dodao inicilazaciju customer objekta, i po defaultu
+    //on ce imati default value za Id = 0
 
     <h2>New Customer</h2>
 }
@@ -15,28 +17,34 @@ else
     <h2>Edit Customer: @Model.Customer.Name</h2>
 }
 
+@Html.ValidationSummary(true, "Please fix the folowing errors:")@*ispise sve validacije i tu ako u zagradama ne napises nista*@
+
 @*using zatvara formu, kao npr </form>, dok beginform otvara <form>*@
 @using (Html.BeginForm("Save", "Customers"))
 {
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.Name)
         @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control"})@*dodas html attribute: bootrap klasu, kako bi input field dobio temu*@
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Customer.Birthdate)
-        @Html.TextBoxFor(m => m.Customer.Birthdate, "{0:d MMM yyyy}",new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Customer.Name, "Please enter customer name")<!--custom message mozes definirati i u Customer.cs modelu-->
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.MembershipTypeId)
         @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Choose..", new { @class = "form-control" })
         <!--                                                                   gdje se nalaze podaci, Id od tablice, sto zelis prikazatu u dropdown-->
+        @Html.ValidationMessageFor(m => m.Customer.MembershipTypeId)@*ovo je implicitno required jer je tipy byte.. a ako se ne odabere, forma
+            posalje empty string kojeg nezna pretvoriti u byte*@
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customer.Birthdate)
+        @Html.TextBoxFor(m => m.Customer.Birthdate, "{0:d MMM yyyy}",new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Customer.Birthdate)<!--data anotation custom validation-->
     </div>
     <div class="checkbox">
         <label>
             @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsLetter) Subscribe to Newsletter?@*ovako i kad kliknes na labelu, checkbox ce se toglati*@
         </label>
     </div>
-    @Html.HiddenFor(m => m.Customer.Id)<!--moras proslijediti i id, bit ce 0 za je create new customer, jer si tako definirao skroz gore-->
+    @Html.HiddenFor(m => m.Customer.Id)<!--moras proslijediti i id, bit ce 0 za create new customer, jer si tako definirao skroz gore-->
     <div>
         <button class="btn btn-primary" type="submit">Save</button>
     </div>

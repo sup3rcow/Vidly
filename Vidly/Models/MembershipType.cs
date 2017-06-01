@@ -11,5 +11,9 @@ namespace Vidly.Models
         public short SignUpFee { get; set; }
         public byte DurationInMonths { get; set; }
         public byte DiscountRate { get; set; }
+
+        public static readonly byte Undefined = 0;//statis fieldove definiras na osnovu modela u tablici
+        //pa onda koristis njih umjesto magic numbers 0, ili 1..
+        public static readonly byte NotAMember = 1;
     }
 }

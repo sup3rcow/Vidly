@@ -6,7 +6,7 @@ namespace Vidly.Models
     public class Customer
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Please enter customer name --data anotation")]
         [StringLength(255)]
         public string Name { get; set; }
         public bool IsSubscribedToNewsLetter { get; set; }
@@ -19,6 +19,7 @@ namespace Vidly.Models
 
         [Display(Name = "Date of birth")]//ovo nije ok uvijek, jer kad hoces mijenjati labelu, moras rebuildati projekt..
         //mozes pisati i raw html, ali onda sam moras napisati for="Birthdate".. ni to nije idealno, pa kkoristi sta ti odgovara vise
+        [Min18YearsIfAMember]
         public DateTime? Birthdate { get; set; }
     }
 }
