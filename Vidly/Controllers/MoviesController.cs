@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -73,6 +74,53 @@ namespace Vidly.Controllers
                 .SingleOrDefault());
         }
 
+        [HttpGet]
+        public ActionResult New()
+        {
+            var genres = _context.Genres.ToList();
+            var viewModel = new MovieFormViewModel
+            {
+                Genres = genres
+            };
+            return View("MovieForm", viewModel);
+        }
+        [HttpPost]
+        public ActionResult Save(Movie movie)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors);//samo za uvid..
 
+            if (movie.Id > 0)//ako je id veci od 0, znas da je edit a ne new movie
+            {
+                var movieInDb = _context.Movies.Single(m => m.Id == movie.Id);
+
+                movieInDb.Name = movie.Name;
+                movieInDb.GenreId = movie.GenreId;
+                movieInDb.ReleaseDate = movie.ReleaseDate;
+                movieInDb.NumberInStock = movie.NumberInStock;
+                movieInDb.DateAdded = movie.DateAdded;//ovo saljes kroz hiddne field cshtml..
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Details", "Movies", new { Id = movieInDb.Id});
+            }
+
+            movie.DateAdded = DateTime.Now;
+            _context.Movies.Add(movie);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Movies");
+        }
+        public ActionResult EditMovie(int id)
+        {
+            var movie = _context.Movies.Single(m => m.Id == id);//ili single or default ko u customerController-u, 
+                                                                //sam procijeni koje greske i kako hoces hendlati
+            var viewModel = new MovieFormViewModel
+            {
+                Genres = _context.Genres.ToList(),//moras ovo slati zbog drop down liste
+                Movie = movie
+            };
+
+            return View("MovieForm", viewModel);
+        }
     }
 }

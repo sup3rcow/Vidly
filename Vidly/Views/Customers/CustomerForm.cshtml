@@ -36,7 +36,7 @@ else
             @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsLetter) Subscribe to Newsletter?@*ovako i kad kliknes na labelu, checkbox ce se toglati*@
         </label>
     </div>
-    @Html.HiddenFor(m => m.Customer.Id)<!--moras proslijediti i id, bit ce 0 ako je create new customer, jer je za int default 0-->
+    @Html.HiddenFor(m => m.Customer.Id)<!--moras proslijediti i id, bit ce 0 za je create new customer, jer si tako definirao skroz gore-->
     <div>
         <button class="btn btn-primary" type="submit">Save</button>
     </div>

@@ -28,6 +28,7 @@ else
             }
         </tbody>
     </table>
-    
-    <a href="customers/new" >Add new Customer</a>
+    <p>
+        @Html.ActionLink("New Customer", "New", "Customers", null, new { @class = "btn btn-primary" })
+    </p>
 }
