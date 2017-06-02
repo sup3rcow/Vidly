@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.ComponentModel.DataAnnotations;
+using Vidly.Dtos;
 
 namespace Vidly.Models
 {
@@ -7,7 +9,38 @@ namespace Vidly.Models
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var customer = (Customer)validationContext.ObjectInstance;
+            var obj = validationContext.ObjectInstance;
+
+            //npr ako pozovemo POST kroz web api, ulazni objekt je CustomerDto, i njega ne mozemo kastati direktno u Customer,
+            //nego ga moramo transformirati sa automapperom..
+            //ovo je dosta "prljavo", a i ako ova validacija ne prodje, web api ce vratiti 400 bad request
+            //mosh je ovaj problem resio tako sto je ibacio iz CustomerDto.cs [Min18YearsIfAMember]
+
+            //mosh kaze da imjenis formu, da iz nje postas kroz web api, a tu u ovoj validaciji da kastas objekt u CustomerDto..
+            //uradi to za vjezbu jednom!!
+            Customer customer = new Customer();
+            try
+            {
+                //ovo je ako npr kreiramo novog customera kroz formu
+                customer = (Customer)obj;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    //ovo je kad kreiramo novog usera kroz web api
+                    customer = Mapper.Map<CustomerDto, Customer>((CustomerDto)obj);
+                }
+                catch (Exception)
+                {
+
+                    //throw;
+                }
+                //throw;
+            }
+
+
+            //var customer = (Customer)validationContext.ObjectInstance;
             if (customer.MembershipTypeId == MembershipType.Undefined || 
                 customer.MembershipTypeId == MembershipType.NotAMember)
             //0(Undefined) je ako korisnik nista ne odabere, jer je 0 default numeric value, 

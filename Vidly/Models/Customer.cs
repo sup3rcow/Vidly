@@ -18,7 +18,9 @@ namespace Vidly.Models
         public byte MembershipTypeId { get; set; }//ef konvencijom, skuzi da je ovo foreign key od MembershipType-a
 
         [Display(Name = "Date of birth")]//ovo nije ok uvijek, jer kad hoces mijenjati labelu, moras rebuildati projekt..
-        //mozes pisati i raw html, ali onda sam moras napisati for="Birthdate".. ni to nije idealno, pa kkoristi sta ti odgovara vise
+                                         //mozes pisati i raw html, ali onda sam moras napisati for="Birthdate".. 
+                                         //ni to nije idealno, pa kkoristi sta ti odgovara vise
+
         [Min18YearsIfAMember]
         public DateTime? Birthdate { get; set; }
     }
