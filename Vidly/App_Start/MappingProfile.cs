@@ -26,6 +26,7 @@ namespace Vidly.App_Start
                 .ForMember(c => c.MembershipType, m => m.MapFrom(dto => new MembershipType()));*/
 
             Mapper.CreateMap<Genre, GenreDto>();
+            Mapper.CreateMap<MembershipType, MembershipTypeDto>();
 
             Mapper.CreateMap<Movie, MovieDto>();
             Mapper.CreateMap<MovieDto, Movie>()

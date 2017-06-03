@@ -3,32 +3,121 @@
     ViewBag.Title = "Index";
 
 }
+<p></p>
+<p>
+    @Html.ActionLink("New Customer", "New", "Customers", null, new { @class = "btn btn-primary" })
+</p>
 
 <h2>Customers</h2>
-@if (!Model.Any())
-{
-    <h4>We don't have any customer yet.</h4>
-}
-else
-{
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr style="width:100%">
-                <th>Customer</th>
-                <th>Membership Info</th>
-            </tr>
-        </thead>
-        <tbody>
+@*
+    @if (!Model.Any())
+    {
+        <h4>We don't have any customer yet.</h4>
+    }
+    else
+    {
+        <!--prije se tablica nalazila tu... ako zelis provjeravati da li postoje podaci za prikaz u tablici, onda to uradi kroz
+            datatables jquery-->
+
+    }
+*@
+
+<table id="customers" class="table table-hover table-bordered">
+    <thead>
+        <tr style="width:100%">
+            <th class="js-sort">Customer</th>
+            <th class="js-sort">Membership Info</th>
+            <th class="js-sort">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @* ovo ti vise ne treba jer, datatable sad uzima podatke preko web api-a
+                  u Customers kontroleru vise ne saljes podatke za tablicu, jer datatable sad to dohvaca preko web apij-a
             @foreach (var c in Model)
             {
                 <tr style="width:100%">
-                    <th >@Html.ActionLink(c.Name, "Details", "Customers", new { Id = c.Id}, null)</th>
-                    <th style="font-weight:400">@c.MembershipType.Name</th>
+                    <td >@Html.ActionLink(c.Name, "Details", "Customers", new { Id = c.Id}, null)</td>
+                    <td style="font-weight:400">@c.MembershipType.Name</td>
+                    <td>
+                        <button class="btn-link js-delete" data-customer-id="@c.Id">Delete</button>
+                    </td>
                 </tr>
-            }
-        </tbody>
-    </table>
-    <p>
-        @Html.ActionLink("New Customer", "New", "Customers", null, new { @class = "btn btn-primary" })
-    </p>
-}
+            }*@
+</tbody>
+</table>
+
+@section scripts {
+    <script>
+        
+        $(document).ready(function () {
+            var table = $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customers",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, customer) {
+                            return "<a href='/customers/edit" + customer.id + "'>" + customer.name + "</a>"
+                        }
+                    },
+                    {
+                        data: "membershipType.name"
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<button class='btn btn-link js-delete' data-customer-id=" + data + ">Delete</button>"
+                        }
+                    }
+
+                ]
+            });
+
+            $("#customers").on("click", ".js-delete", function () {//".js-delete" se nalazi tu zbog oprimizacije, video 72-optimizing jquery
+                var button = $(this);//sacuves referencu na button, prije nego pozoves web api, jer onda this valjda nije vise button, zbog call back-a
+
+                if (confirm("Are you sure you want to delete this customer?")) {
+                    $.ajax({
+                        url: "/api/customers/" + button.attr("data-customer-id"),
+                        method: "DELETE",
+                        success: function () {
+                            table.row(button.parents("tr")).remove().draw();
+                            //obrises red iz tablice, i onde osvjezis tablicu, inace ako ne osvjezis, search ce ti pronalaziti i obrisani redak
+                            //boljde da maknes ovu delete opciju iz tablice, i stavis da se samo moze brisati kad odes na profil od customera
+                        }
+                    });
+                }
+            });
+
+            //moras vise od 3 slova uneti u search kako bi pretrazio..
+            $('.dataTables_filter input').unbind().keyup(function (e) {
+                var value = $(this).val();
+                if (value.length > 3) {
+                    table.search(value).draw();
+                } else {
+                    //optional, reset the search if the phrase 
+                    //is less then 3 characters long
+                    table.search('').draw();
+                }
+            });
+            //saznas po cemu i kako je sortirana tablica
+            $("#customers").on("click", ".js-sort", function () {
+                var order = table.order();
+                var title = table.column(order[0][0]).header();
+                console.log('Table is ordered by column: ' + $(title).html() + ', direction:' + order[0][1]);
+            });
+
+            //saznas po cemu se trazi
+            table.on('search.dt', function () {
+                var value = $('.dataTables_filter input').val();
+                console.log(value); // <-- the value
+            })
+
+            //jos moras saznati koji na kojem si indexu tablice i koliko ima elemanata u prikazu
+            //i sad imas sve podatke potrebne da se napravi export :))
+            
+        });
+    </script>
+    }

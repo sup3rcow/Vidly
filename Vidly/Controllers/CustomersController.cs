@@ -23,7 +23,10 @@ namespace Vidly.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            return View(_context.Customers.Include(c => c.MembershipType).ToList());
+            return View();//saljes samo view, jer data tables, dohvaca podatke preko web apija..
+
+            //var customers = _context.Customers.Include(c => c.MembershipType).ToList();
+            //return View(customers);
             //ili Include("MembershipType"), i onda moras using System.Data.Entity;, ali tada ovisis os magicnom stringu, i akko ga lose
             //napises, gresku ces videti tek u runtime-u
             //ako ne pozoves tu to list, query ce se izvrsiti u cshtml-u u foreach-u
