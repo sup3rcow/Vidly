@@ -13,7 +13,7 @@ namespace Vidly.Dtos
         public string Name { get; set; }
         public bool IsSubscribedToNewsLetter { get; set; }
 
-        public byte MembershipTypeId { get; set; }//ef konvencijom, skuzi da je ovo foreign key od MembershipType-a
+        public byte MembershipTypeId { get; set; }
 
         [Min18YearsIfAMember]
         public DateTime? Birthdate { get; set; }

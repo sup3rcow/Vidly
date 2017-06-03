@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using System;
 using System.Linq;
-using System.Net;
 using System.Web.Http;
 using Vidly.Dtos;
 using Vidly.Models;
@@ -20,9 +19,8 @@ namespace Vidly.Controllers.Api
         public IHttpActionResult GetCustomers()
         {
 
-            var customerDtos = _context.Customers.ToList()
-                .Select(Mapper.Map<Customer,CustomerDto>);//nema (), jer delegiras mapira ne pozivas ga
-
+            var customerDtos = _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDto>);
+                                                                            //nema (), jer delegiras mapira ne pozivas ga
             return Ok(customerDtos);
         }
 
@@ -105,7 +103,8 @@ namespace Vidly.Controllers.Api
 
             if (CustomerInDb == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                //throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
 
             _context.Customers.Remove(CustomerInDb);

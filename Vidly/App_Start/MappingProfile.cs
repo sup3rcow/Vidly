@@ -17,12 +17,20 @@ namespace Vidly.App_Start
                 .ForMember(dto => dto.Birthdate, m => m.MapFrom(c => c.Birthdate));*/
 
             Mapper.CreateMap<CustomerDto, Customer>();/*
-                .ForMember(c => c.Id, m => m.MapFrom(dto => dto.Id))
+                .ForMember(c => c.Id, opt => opt.Ignore())//ovako mu kazes da zanemari id, npr kad radis post,
+                                                          //ali izgleda da i bez ovoga zanemaruje id.              
                 .ForMember(c => c.Name, m => m.MapFrom(dto => dto.Name))
                 .ForMember(c => c.IsSubscribedToNewsLetter, m => m.MapFrom(dto => dto.IsSubscribedToNewsLetter))
                 .ForMember(c => c.MembershipTypeId, m => m.MapFrom(dto => dto.MembershipTypeId))
                 .ForMember(c => c.Birthdate, m => m.MapFrom(dto => dto.Birthdate))
                 .ForMember(c => c.MembershipType, m => m.MapFrom(dto => new MembershipType()));*/
+
+            Mapper.CreateMap<Genre, GenreDto>();
+
+            Mapper.CreateMap<Movie, MovieDto>();
+            Mapper.CreateMap<MovieDto, Movie>()
+                .ForMember(c => c.Id, opt => opt.Ignore());//ovako mu kazes da zanemari id, npr kad radis post,
+                                                           //ali izgleda da i bez ovoga zanemaruje id.
         }
 
 
