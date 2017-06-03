@@ -3,6 +3,10 @@
     ViewBag.Title = "Index";
 
 }
+
+
+<link href="~/Content/DataTables/css/buttons.dataTables.css" rel="stylesheet" />
+
 <p></p>
 <p>
     @Html.ActionLink("New Customer", "New", "Customers", null, new { @class = "btn btn-primary" })
@@ -47,29 +51,68 @@
 </table>
 
 @section scripts {
-    <script src="~/Scripts/DataTables/dataTables.buttons.js"></script>
-    <script src="~/Scripts/DataTables/buttons.flash.js"></script>
 
+    <script src="~/Scripts/DataTables/dataTables.buttons.js"></script>
+    <script src="~/Scripts/jszip.js"></script>
+    <script src="~/Scripts/DataTables/buttons.html5.js"></script>
+
+    <!--digni datatables na novu verziju-->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
+
     <script>
         
         $(document).ready(function () {
+            var currentDate = new Date()
+            var day = currentDate.getDate()
+            var month = currentDate.getMonth() + 1
+            var year = currentDate.getFullYear()
+
+            var d = year + "_" + month + "_" + day;
+
             var table = $("#customers").DataTable({
-                dom: 'Bfrtip',
+                iDisplayLength: 15,
+                //lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
+                lengthMenu: [[10, 15, 25, 50, 100], [10, 15, 25, 50, 100]],
+                dom: 'Blfrtip',//ovo definira prikaz datapages elemanta
                 ajax: {
                     url: "/api/customers",
                     dataSrc: ""
                 },
                 buttons: [
-                        'excel', 'csv'
+                    //'excel'//, 'copy', 'csv', 'pdf', 'print'
+                    {
+                        extend: 'excel',
+                        text: 'Save all pages',
+                        title: 'All_pages_export_' + d
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Save current page',
+                        title: 'One_page_export_' + d,
+                        exportOptions: {
+                            modifier: {
+                                page: 'current'
+                            }
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        customize: function (xlsx) {
+                            var sheet = xlsx.xl.worksheets['Sheet1.xml'];
+                            var col = $('col', sheet);
+                            col.each(function () {
+                                $(this).attr('width', 30);
+                            });
+                        }
+                    }
+                ],
+                columnDefs: [
+                    { "width": "45%", "targets": 0 },
+                    { "width": "45%", "targets": 1 }
                 ],
                 columns: [
                     {
@@ -90,6 +133,8 @@
 
                 ]
             });
+
+
 
             $("#customers").on("click", ".js-delete", function () {//".js-delete" se nalazi tu zbog oprimizacije, video 72-optimizing jquery
                 var button = $(this);//sacuves referencu na button, prije nego pozoves web api, jer onda this valjda nije vise button, zbog call back-a
