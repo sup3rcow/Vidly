@@ -56,12 +56,7 @@
     <script src="~/Scripts/jszip.js"></script>
     <script src="~/Scripts/DataTables/buttons.html5.js"></script>
 
-    <!--digni datatables na novu verziju-->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+ 
 
     <script>
         
@@ -82,37 +77,42 @@
                     url: "/api/customers",
                     dataSrc: ""
                 },
+                columnDefs: [//ovo je za prikaz u aplikaciji , ne i za export,  OVO MORA DOCI PRIJE CUSTOMIZE: DEFNIRANJE COLUM WIDTH?
+                //JE ONDA ON POBRKA NESTO
+                    { "width": "45%", "targets": 0 },
+                    { "width": "45%", "targets": 1 }
+                ],
                 buttons: [
                     //'excel'//, 'copy', 'csv', 'pdf', 'print'
                     {
-                        extend: 'excel',
-                        text: 'Save all pages',
-                        title: 'All_pages_export_' + d
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Save current page',
-                        title: 'One_page_export_' + d,
-                        exportOptions: {
-                            modifier: {
-                                page: 'current'
-                            }
-                        }
-                    },
-                    {
                         extend: 'excelHtml5',
-                        customize: function (xlsx) {
+                        text: 'Save all pages',
+                        title: 'All_pages_export_' + d,
+                        customize: function (xlsx) {// DEFINIRANJE SIRINE SVIMA ISTO, ovo ne radi.. provjeri jednom ako ti bude trebalo
                             var sheet = xlsx.xl.worksheets['Sheet1.xml'];
                             var col = $('col', sheet);
                             col.each(function () {
                                 $(this).attr('width', 30);
                             });
                         }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Save current page',
+                        title: 'One_page_export_' + d,
+                        customize: function (xlsx) {// POJEDINACNO DEFINIRANJE SIRINE 
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            var col = $('col', sheet);
+                            $(col[0]).attr('width', 50);
+                            $(col[1]).attr('width', 100);
+                            $(col[2]).attr('width', 10);
+                        },
+                        exportOptions: {
+                            modifier: {
+                                page: 'current'
+                            }
+                        }
                     }
-                ],
-                columnDefs: [
-                    { "width": "45%", "targets": 0 },
-                    { "width": "45%", "targets": 1 }
                 ],
                 columns: [
                     {
